@@ -1,0 +1,2 @@
+# Place SQL initialization scripts here
+# They will run in alphabetical order on first container start

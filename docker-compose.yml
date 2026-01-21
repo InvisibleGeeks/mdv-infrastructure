@@ -1,0 +1,33 @@
+services:
+    mysql:
+        image: 'mysql/mysql-server:8.0'
+        container_name: mdv-mysql
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        restart: always
+        volumes:
+            - 'mdv-mysql-data:/var/lib/mysql'
+            - './mysql/init:/docker-entrypoint-initdb.d'
+        networks:
+            - mdv-network
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+networks:
+    mdv-network:
+        driver: bridge
+        name: mdv-network
+
+volumes:
+    mdv-mysql-data:
+        driver: local
