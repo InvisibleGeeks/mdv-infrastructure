@@ -23,6 +23,26 @@ services:
             timeout: 5s
             retries: 5
 
+    clickhouse:
+        image: clickhouse/clickhouse-server:24.1
+        container_name: mdv-clickhouse
+        ports:
+            - '${CLICKHOUSE_HTTP_PORT:-8123}:8123'
+            - '${CLICKHOUSE_NATIVE_PORT:-9000}:9000'
+        environment:
+            CLICKHOUSE_DB: '${CLICKHOUSE_DATABASE:-default}'
+            CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+        volumes:
+            - 'mdv-clickhouse-data:/var/lib/clickhouse'
+            - './clickhouse/init:/docker-entrypoint-initdb.d'
+        networks:
+            - mdv-network
+        healthcheck:
+            test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
 networks:
     mdv-network:
         driver: bridge
@@ -30,4 +50,6 @@ networks:
 
 volumes:
     mdv-mysql-data:
+        driver: local
+    mdv-clickhouse-data:
         driver: local
