@@ -31,6 +31,8 @@ services:
             - '${CLICKHOUSE_NATIVE_PORT:-9000}:9000'
         environment:
             CLICKHOUSE_DB: '${CLICKHOUSE_DATABASE:-default}'
+            CLICKHOUSE_USER: '${CLICKHOUSE_USER:-mdv_user}'
+            CLICKHOUSE_PASSWORD: '${CLICKHOUSE_PASSWORD:-mdv_secret_2026}'
             CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
         volumes:
             - 'mdv-clickhouse-data:/var/lib/clickhouse'
